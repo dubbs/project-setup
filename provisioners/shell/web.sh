@@ -10,6 +10,8 @@ if [ $? -ne 0 ];then
   chkconfig --levels 235 httpd on
   # enable named virtual hosts
   sed -i.orig 's/^#NameVirtualHost/NameVirtualHost/' /etc/httpd/conf/httpd.conf
+  # set server name
+  sed -i.orig2 's/^#ServerName www.example.com:80/ServerName 192.168.33.10/' /etc/httpd/conf/httpd.conf
   # add virtual host entry to conf
   cat /vagrant/config/httpd/vhosts.conf >> /etc/httpd/conf/httpd.conf
   # symlink public
