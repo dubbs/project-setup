@@ -1,4 +1,5 @@
-service --status-all|grep -q httpd
+# HTTPD
+rpm -qa|grep httpd > /dev/null
 # $? return code from last command
 if [ $? -ne 0 ];then
   # install httpd
@@ -15,4 +16,11 @@ if [ $? -ne 0 ];then
   ln -s /vagrant/public_html /var/www/example.com
   # start httpd
   service httpd start
+fi
+
+# PHP
+rpm -qa|grep php > /dev/null
+if [ $? -ne 0 ];then
+  yum -y install php
+  service httpd restart
 fi
