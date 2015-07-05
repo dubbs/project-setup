@@ -13,9 +13,14 @@ vagrant version
 ```
 
 ##Install VM Box
-```
+```bash
 vagrant box add chef/centos-6.5
 vagrant init chef/centos-6.5
 vagrant up
 vagrant ssh
+```
+
+##Add host entry
+```bash
+192.168.33.10 example.com
 ```
