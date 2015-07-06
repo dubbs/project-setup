@@ -26,3 +26,10 @@ if [ $? -ne 0 ];then
   yum -y install php
   service httpd restart
 fi
+
+# MARIADB
+rpm -qa|grep MariaDB > /dev/null
+if [ $? -ne 0 ];then
+  ln -s /vagrant/config/yum/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
+  yum -y install MariaDB-server MariaDB-client
+fi
