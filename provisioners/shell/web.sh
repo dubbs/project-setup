@@ -24,7 +24,9 @@ fi
 # PHP
 rpm -qa|grep php > /dev/null
 if [ $? -ne 0 ];then
-  yum -y install php
+  rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
+  yum -y install php56w php56w-mysql php56w-pecl-zendopcache php56w-pecl-xdebug
+  # @see /etc/httpd/conf.d/php.conf
   service httpd restart
 fi
 
