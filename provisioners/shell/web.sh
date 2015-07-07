@@ -16,7 +16,7 @@ if [ $? -ne 0 ];then
   cat /vagrant/config/httpd/vhosts.conf >> /etc/httpd/conf/httpd.conf
   # symlink public
   # this has been moved to vagrantfile for now
-  #ln -s /vagrant/public_html /var/www/example.com
+  ln -s /vagrant/public_html /var/www/example.com
   # start httpd
   service httpd start
 fi
@@ -26,8 +26,8 @@ rpm -qa|grep php > /dev/null
 if [ $? -ne 0 ];then
   # add webtatic repository
   rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
-  # install php extensions
-  yum -y install php56w php56w-mysql php56w-pecl-zendopcache php56w-pecl-xdebug
+  # install php extensions, gd for drupal
+  yum -y install php56w php56w-mysql php56w-gd php56w-pecl-zendopcache php56w-pecl-xdebug
   # @see /etc/httpd/conf.d/php.conf
   service httpd restart
 fi
@@ -59,6 +59,12 @@ fi
 if [ ! -d /var/lib/mysql/example_com ];then
   mysqladmin -uadmin -ppassword create example_com
 fi
+
+# DRUPAL
+rm -f /var/www/example.com
+drush dl drupal-7.x --drupal-project-rename=example.com
+cd example.com
+drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
 
 
 
