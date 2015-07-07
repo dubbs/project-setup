@@ -7,7 +7,7 @@ if [ $? -ne 0 ];then
   # set runlevels for httpd service
   #   chkconfig --list httpd
   #   httpd 0:off 1:off 2:off 3:off 4:off 5:off 6:off
-  chkconfig --levels 235 httpd on
+  chkconfig --levels 2345 httpd on
   # enable named virtual hosts
   sed -i.orig 's/^#NameVirtualHost/NameVirtualHost/' /etc/httpd/conf/httpd.conf
   # set server name
@@ -39,7 +39,8 @@ if [ ! -f /usr/local/bin/composer ];then
 fi
 
 # DRUSH
-#/usr/local/bin/composer global show -i|grep drush > /dev/null
+# /usr/local/bin/composer global show -i|grep drush > /dev/null
+# test if symlink and file exist
 if [ ! -L /usr/local/bin/drush ];then
   /usr/local/bin/composer global require drush/drush:7.*
   ln -fs /root/.composer/vendor/bin/drush /usr/local/bin/drush
@@ -50,4 +51,14 @@ rpm -qa|grep MariaDB > /dev/null
 if [ $? -ne 0 ];then
   ln -s /vagrant/config/yum/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
   yum -y install MariaDB-server MariaDB-client
+  chkconfig --levels 2345 mysql on
+  service mysql start
 fi
+
+# DB
+if [ ! -d /var/lib/mysql/example_com ];then
+  mysqladmin -uadmin -ppassword create example_com
+fi
+
+
+
