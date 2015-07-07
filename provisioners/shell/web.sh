@@ -24,10 +24,25 @@ fi
 # PHP
 rpm -qa|grep php > /dev/null
 if [ $? -ne 0 ];then
+  # add webtatic repository
   rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
+  # install php extensions
   yum -y install php56w php56w-mysql php56w-pecl-zendopcache php56w-pecl-xdebug
   # @see /etc/httpd/conf.d/php.conf
   service httpd restart
+fi
+
+# COMPOSER
+if [ ! -f /usr/local/bin/composer ];then
+  curl -sS https://getcomposer.org/installer | php
+  mv composer.phar /usr/local/bin/composer
+fi
+
+# DRUSH
+#/usr/local/bin/composer global show -i|grep drush > /dev/null
+if [ ! -L /usr/local/bin/drush ];then
+  /usr/local/bin/composer global require drush/drush:7.*
+  ln -fs /root/.composer/vendor/bin/drush /usr/local/bin/drush
 fi
 
 # MARIADB
