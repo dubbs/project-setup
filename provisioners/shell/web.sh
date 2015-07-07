@@ -15,7 +15,8 @@ if [ $? -ne 0 ];then
   # add virtual host entry to conf
   cat /vagrant/config/httpd/vhosts.conf >> /etc/httpd/conf/httpd.conf
   # symlink public
-  ln -s /vagrant/public_html /var/www/example.com
+  # this has been moved to vagrantfile for now
+  #ln -s /vagrant/public_html /var/www/example.com
   # start httpd
   service httpd start
 fi
