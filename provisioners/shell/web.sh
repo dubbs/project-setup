@@ -1,3 +1,6 @@
+
+export PATH=/usr/local/bin:$PATH
+
 # HTTPD
 rpm -qa|grep httpd > /dev/null
 # $? return code from last command
@@ -57,11 +60,16 @@ fi
 
 # DB
 if [ ! -d /var/lib/mysql/example_com ];then
-  mysqladmin -uadmin -ppassword create example_com
+  mysql -uroot -e "CREATE DATABASE example_com;"
+  mysql -uroot -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';"
+  mysql -uroot -e "GRANT ALL PRIVILEGES ON example_com.* TO admin@'%' IDENTIFIED BY 'password';"
+  mysql -uroot -e "GRANT ALL PRIVILEGES ON example_com.* TO admin@localhost IDENTIFIED BY 'password';"
+  mysql -uroot -e "FLUSH PRIVILEGES;"
 fi
 
 # DRUPAL
-rm -f /var/www/example.com
+cd /var/www
+rm -f example.com
 drush dl drupal-7.x --drupal-project-rename=example.com
 cd example.com
 drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
