@@ -81,6 +81,10 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   drush dl drupal-7.x --drupal-project-rename=example.com
   cd example.com
   drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
+  # enable base modules
+  drush -y en views devel advanced_help
+  # enable base module extensions
+  drush -y en views_ui devel_generate
   # set appropriate permissions for files directory
   chmod -R 0700 /var/www/example.com/sites/default/files
   # set appropriate permissions for site
