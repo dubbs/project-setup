@@ -29,8 +29,14 @@ rpm -qa|grep php > /dev/null
 if [ $? -ne 0 ];then
   # add webtatic repository
   rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
-  # install php extensions, gd for drupal
-  yum -y install php56w php56w-mysql php56w-gd php56w-pecl-zendopcache php56w-pecl-xdebug
+  # install php extensions
+  # gd for drush
+  # apcu for drupal upload progress
+  # mbstring for improved unicode support in drupal
+  # yum search php56
+  yum -y install php56w php56w-mysql php56w-gd php56w-mbstring php56w-pecl-zendopcache php56w-pecl-xdebug php56w-pecl-apcu
+  # enable apc for file upload
+  sed -i 's/^apc.rfc1867=0/apc.rfc1867=1/' /etc/php.d/apcu.ini
   # @see /etc/httpd/conf.d/php.conf
   service httpd restart
 fi
@@ -67,12 +73,22 @@ if [ ! -d /var/lib/mysql/example_com ];then
   mysql -uroot -e "FLUSH PRIVILEGES;"
 fi
 
-# DRUPAL
+# DRUPAL INSTALL
 if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   rm -f /var/www/example.com
   cd /var/www
+  # download/install drupal7
   drush dl drupal-7.x --drupal-project-rename=example.com
   cd example.com
   drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
+  # set appropriate permissions for files directory
+  chmod -R 0700 /var/www/example.com/sites/default/files
+  # set appropriate permissions for site
+  chown -R apache:apache /var/www/example.com
 fi
+
+
+
+
+
 
