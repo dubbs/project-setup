@@ -68,11 +68,11 @@ if [ ! -d /var/lib/mysql/example_com ];then
 fi
 
 # DRUPAL
-cd /var/www
-rm -f example.com
-drush dl drupal-7.x --drupal-project-rename=example.com
-cd example.com
-drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
-
-
+if [ ! -f /var/www/example.com/sites/default/settings.php ];then
+  rm -f /var/www/example.com
+  cd /var/www
+  drush dl drupal-7.x --drupal-project-rename=example.com
+  cd example.com
+  drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
+fi
 
