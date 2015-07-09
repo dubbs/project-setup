@@ -5,12 +5,13 @@ export PATH=/usr/local/bin:$PATH
 rpm -qa|grep httpd > /dev/null
 # $? return code from last command
 if [ $? -ne 0 ];then
+  echo httpd
   # install httpd
   yum -y install httpd
   # set runlevels for httpd service
   #   chkconfig --list httpd
   #   httpd 0:off 1:off 2:off 3:off 4:off 5:off 6:off
-  chkconfig --levels 2345 httpd on
+  chkconfig --levels 345 httpd on
   # enable named virtual hosts
   sed -i.orig 's/^#NameVirtualHost/NameVirtualHost/' /etc/httpd/conf/httpd.conf
   # set server name
@@ -27,6 +28,7 @@ fi
 # PHP
 rpm -qa|grep php > /dev/null
 if [ $? -ne 0 ];then
+  echo php
   # add webtatic repository
   rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
   # install php extensions
@@ -43,6 +45,7 @@ fi
 
 # COMPOSER
 if [ ! -f /usr/local/bin/composer ];then
+  echo composer
   curl -sS https://getcomposer.org/installer | php
   mv composer.phar /usr/local/bin/composer
 fi
@@ -51,6 +54,7 @@ fi
 # /usr/local/bin/composer global show -i|grep drush > /dev/null
 # test if symlink and file exist
 if [ ! -L /usr/local/bin/drush ];then
+  echo drush
   /usr/local/bin/composer global require drush/drush:7.*
   ln -fs /root/.composer/vendor/bin/drush /usr/local/bin/drush
 fi
@@ -58,14 +62,16 @@ fi
 # MARIADB
 rpm -qa|grep MariaDB > /dev/null
 if [ $? -ne 0 ];then
+  echo maria
   ln -s /vagrant/config/yum/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
   yum -y install MariaDB-server MariaDB-client
-  chkconfig --levels 2345 mysql on
+  chkconfig --levels 345 mysql on
   service mysql start
 fi
 
 # DB
 if [ ! -d /var/lib/mysql/example_com ];then
+  echo dbusers
   mysql -uroot -e "CREATE DATABASE example_com;"
   mysql -uroot -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';"
   mysql -uroot -e "GRANT ALL PRIVILEGES ON example_com.* TO admin@'%' IDENTIFIED BY 'password';"
@@ -75,6 +81,7 @@ fi
 
 # DRUPAL INSTALL
 if [ ! -f /var/www/example.com/sites/default/settings.php ];then
+  echo drupal
   rm -f /var/www/example.com
   cd /var/www
   # download/install drupal7
@@ -91,8 +98,18 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   chown -R apache:apache /var/www/example.com
 fi
 
-
-
-
-
-
+## VARNISH
+rpm -qa|grep varnish > /dev/null
+if [ $? -ne 0 ];then
+  echo varnish
+  rpm --nosignature -i https://repo.varnish-cache.org/redhat/varnish-4.0.el6.rpm
+  yum -y install varnish
+  chkconfig --levels 345 varnish on
+  sed -i 's/^Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
+  sed -i 's/^VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
+  service varnish restart
+  service httpd restart
+  # @todo copy config/varnish/default.vcl
+  # @todo drush en -y varnish
+  # @todo copy /etc/varnish/secret to varnish config page
+fi

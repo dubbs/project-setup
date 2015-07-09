@@ -1,8 +1,11 @@
 ##Install Virtualbox
 ```bash
-wget http://download.virtualbox.org/virtualbox/4.3.28/virtualbox-4.3_4.3.28-100309~Ubuntu~raring_amd64.deb
-sudo dpkg -i virtualbox-4.3_4.3.28-100309~Ubuntu~raring_amd64.deb
-virtualbox --help
+#4.3.18
+sudo apt-get install virtualbox
+#newest version
+#wget http://download.virtualbox.org/virtualbox/4.3.28/virtualbox-4.3_4.3.28-100309~Ubuntu~raring_amd64.deb
+#sudo dpkg -i virtualbox-4.3_4.3.28-100309~Ubuntu~raring_amd64.deb
+#virtualbox --help
 ```
 
 ##Install Vagrant
