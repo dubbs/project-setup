@@ -102,14 +102,18 @@ fi
 rpm -qa|grep varnish > /dev/null
 if [ $? -ne 0 ];then
   echo varnish
+  # install varnish
   rpm --nosignature -i https://repo.varnish-cache.org/redhat/varnish-4.0.el6.rpm
   yum -y install varnish
   chkconfig --levels 345 varnish on
+  # update ports so forwards to apache
   sed -i 's/^Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
   sed -i 's/^VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
+  # update config
+  \cp /vagrant/config/varnish/default.vcl /etc/varnish/
   service varnish restart
   service httpd restart
-  # @todo copy config/varnish/default.vcl
-  # @todo drush en -y varnish
-  # @todo copy /etc/varnish/secret to varnish config page
+  # install drupal module and set config
+  drush en -y varnish
+  cat /etc/varnish/secret | xargs drush vset varnish_control_key
 fi
