@@ -114,6 +114,12 @@ if [ $? -ne 0 ];then
   service varnish restart
   service httpd restart
   # install drupal module and set config
+  drush -y dl varnish-7.x-1.x-dev
   drush en -y varnish
+  drush vset cache 1
+  drush vset block_cache 1
+  drush vset page_cache_maximum_age 900
+  drush vset cache_lifetime 0
+  drush vset varnish_version 4
   cat /etc/varnish/secret | xargs drush vset varnish_control_key
 fi
