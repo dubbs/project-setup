@@ -90,8 +90,8 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
   # disable modules
   drush -y dis dblog
-  # enable base modules
-  drush -y en views devel advanced_help syslog
+  # enable modules
+  drush -y en views devel advanced_help syslog jquery_update bootstrap
   # enable base module extensions
   drush -y en views_ui devel_generate
   # set appropriate permissions for files directory
@@ -103,6 +103,8 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   drush vset error_level 1
   echo 'local0.* /var/log/example_com.log' >> /etc/rsyslog.conf
   service rsyslog restart
+  # setup default theme
+  drush vset theme_default bootstrap
 fi
 
 ## VARNISH
