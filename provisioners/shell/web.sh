@@ -107,16 +107,17 @@ if [ $? -ne 0 ];then
   yum -y install varnish
   chkconfig --levels 345 varnish on
   # update ports so forwards to apache
-  sed -i 's/^Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf
+  sed -i 's/^80/8080/' /etc/httpd/conf/httpd.conf
   sed -i 's/^VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
-  # update config
+  # update config, \cp will run original cp command without alias, which is cp -i
   \cp /vagrant/config/varnish/default.vcl /etc/varnish/
   service varnish restart
   service httpd restart
   # install drupal module and set config
   drush -y dl varnish-7.x-1.x-dev
   drush en -y varnish
-  drush vset cache 1
+  # this prompts for input, 1 = cache
+  echo 1 | drush vset cache 1
   drush vset block_cache 1
   drush vset page_cache_maximum_age 900
   drush vset cache_lifetime 0
