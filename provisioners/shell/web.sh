@@ -107,7 +107,7 @@ if [ $? -ne 0 ];then
   yum -y install varnish
   chkconfig --levels 345 varnish on
   # update ports so forwards to apache
-  sed -i 's/^80/8080/' /etc/httpd/conf/httpd.conf
+  sed -i 's/80/8080/' /etc/httpd/conf/httpd.conf
   sed -i 's/^VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
   # update config, \cp will run original cp command without alias, which is cp -i
   \cp /vagrant/config/varnish/default.vcl /etc/varnish/
