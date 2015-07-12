@@ -91,7 +91,7 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   # disable modules
   drush -y dis dblog
   # enable modules
-  drush -y en views devel advanced_help syslog jquery_update bootstrap
+  drush -y en views devel advanced_help syslog jquery_update bootstrap pathauto
   # enable base module extensions
   drush -y en views_ui devel_generate
   # set appropriate permissions for files directory
@@ -105,6 +105,8 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   service rsyslog restart
   # setup default theme
   drush vset theme_default bootstrap
+  # pathauto
+  drush vset pathauto_node_article_pattern 'article/[node:title]'
 fi
 
 ## VARNISH
