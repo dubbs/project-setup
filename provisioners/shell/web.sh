@@ -88,11 +88,16 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   drush dl drupal-7.x --drupal-project-rename=example.com
   cd example.com
   drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
-  # disable modules
+  # dblog replaced by syslog
   drush -y dis dblog
-  # enable modules
-  drush -y en views devel advanced_help syslog jquery_update bootstrap pathauto metatag
-  # enable base module extensions
+  # syslog for logging to file
+  # jquery_update for bootstrap
+  # pathauto for pretty urls
+  # metatag for automatic metatags
+  # transliteration for cleaning up filenames during upload
+  drush -y en views devel advanced_help syslog jquery_update bootstrap pathauto metatag transliteration
+  # view_ui for ui based views admin
+  # devel_generate for content
   drush -y en views_ui devel_generate
   # set appropriate permissions for files directory
   chmod -R 0700 /var/www/example.com/sites/default/files
