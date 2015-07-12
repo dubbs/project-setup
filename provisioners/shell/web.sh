@@ -134,8 +134,6 @@ if [ $? -ne 0 ];then
   sed -i 's/^VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
   # update config, \cp will run original cp command without alias, which is cp -i
   \cp /vagrant/config/varnish/default.vcl /etc/varnish/
-  service varnish restart
-  service httpd restart
   # install drupal module and set config
   cd /var/www/example.com
   drush -y dl varnish-7.x-1.x-dev
@@ -147,4 +145,7 @@ if [ $? -ne 0 ];then
   drush vset cache_lifetime 0
   drush vset varnish_version 4
   cat /etc/varnish/secret | xargs drush vset varnish_control_key
+  # restart
+  service httpd restart
+  service varnish restart
 fi
