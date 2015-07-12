@@ -137,6 +137,7 @@ if [ $? -ne 0 ];then
   service varnish restart
   service httpd restart
   # install drupal module and set config
+  cd /var/www/example.com
   drush -y dl varnish-7.x-1.x-dev
   drush en -y varnish
   # this prompts for input, 1 = cache
