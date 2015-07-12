@@ -104,15 +104,21 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   chmod -R 0700 /var/www/example.com/sites/default/files
   # set appropriate permissions for site
   chown -R apache:apache /var/www/example.com
-  # setup syslog 
+  # syslog 
   drush vset syslog_identity example_com
-  drush vset error_level 1
   echo 'local0.* /var/log/example_com.log' >> /etc/rsyslog.conf
   service rsyslog restart
-  # setup default theme
+  # theme
   drush vset theme_default bootstrap
   # pathauto
   drush vset pathauto_node_article_pattern 'article/[node:title]'
+  # region
+  drush vset site_default_country 'CA'
+  drush vset date_default_timezone 'America/Regina'
+  # security_review recommendations
+  echo "\$base_url = 'http://example.com';" >> /var/www/example.com/sites/default/settings.php
+  drush vset error_level 0
+  . /vagrant/config/drupal/fix-permissions.sh --drupal_path=/var/www/example.com --drupal_user=root --httpd_group=apache
 fi
 
 ## VARNISH
