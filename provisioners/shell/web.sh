@@ -95,7 +95,8 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   # pathauto for pretty urls
   # metatag for automatic metatags
   # transliteration for cleaning up filenames during upload
-  drush -y en views devel advanced_help syslog jquery_update bootstrap pathauto metatag transliteration
+  # admin_menu for easy admin nav
+  drush -y en views devel advanced_help syslog jquery_update bootstrap pathauto metatag transliteration admin_menu
   # view_ui for ui based views admin
   # devel_generate for content
   drush -y en views_ui devel_generate
