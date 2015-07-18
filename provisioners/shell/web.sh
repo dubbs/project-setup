@@ -89,14 +89,14 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   cd example.com
   drush -y site-install standard --db-url='mysql://admin:password@localhost/example_com' --account-name=admin --account-pass=password --site-name=Example
   # dblog replaced by syslog
-  drush -y dis dblog
+  # toolbar replaced by admin_menu
+  drush -y dis dblog toolbar
   # syslog for logging to file
-  # jquery_update for bootstrap
   # pathauto for pretty urls
   # metatag for automatic metatags
   # transliteration for cleaning up filenames during upload
   # admin_menu for easy admin nav
-  drush -y en views devel advanced_help syslog jquery_update bootstrap pathauto metatag transliteration admin_menu
+  drush -y en views devel advanced_help syslog pathauto metatag transliteration admin_menu
   # view_ui for ui based views admin
   # devel_generate for content
   drush -y en views_ui devel_generate
@@ -108,8 +108,6 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   drush vset syslog_identity example_com
   echo 'local0.* /var/log/example_com.log' >> /etc/rsyslog.conf
   service rsyslog restart
-  # theme
-  drush vset theme_default bootstrap
   # pathauto
   drush vset pathauto_node_article_pattern 'article/[node:title]'
   # region
@@ -119,6 +117,19 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   echo "\$base_url = 'http://example.com';" >> /var/www/example.com/sites/default/settings.php
   drush vset error_level 0
   . /vagrant/config/drupal/fix-permissions.sh --drupal_path=/var/www/example.com --drupal_user=root --httpd_group=apache
+fi
+
+## DRUPAL THEME BOOTSTRAP
+if [ ! -d /var/www/example.com/sites/all/themes/bootstrap ];then
+  drush -y en jquery_update bootstrap
+  drush vset theme_default bootstrap
+fi
+
+## DRUPAL THEME OMEGA
+if [ ! -d /var/www/example.com/sites/all/themes/omega ];then
+  drush -y en omega
+  drush omega-subtheme --enable --set-default omegasub
+  cat /vagrant/config/drupal/omega-settings.info >> /var/www/example.com/sites/all/themes/omegasub/omegasub.info
 fi
 
 ## VARNISH
