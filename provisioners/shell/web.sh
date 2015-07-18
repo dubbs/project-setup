@@ -18,9 +18,9 @@ if [ $? -ne 0 ];then
   sed -i.orig2 's/^#ServerName www.example.com:80/ServerName 192.168.33.10/' /etc/httpd/conf/httpd.conf
   # add virtual host entry to conf
   cat /vagrant/config/httpd/vhosts.conf >> /etc/httpd/conf/httpd.conf
-  # symlink public
-  # this has been moved to vagrantfile for now
-  ln -s /vagrant/public_html /var/www/example.com
+  # add test file
+  mkdir -p /var/www/example.com
+  echo 'HTML' > /var/www/example.com/index.html
   # start httpd
   service httpd start
 fi
@@ -39,6 +39,8 @@ if [ $? -ne 0 ];then
   yum -y install php56w php56w-mysql php56w-gd php56w-mbstring php56w-pecl-zendopcache php56w-pecl-xdebug php56w-pecl-apcu
   # enable apc for file upload
   sed -i 's/^apc.rfc1867=0/apc.rfc1867=1/' /etc/php.d/apcu.ini
+  # add test file
+  echo '<?php echo phpinfo(); ?>' > /var/www/example.com/index.php
   # @see /etc/httpd/conf.d/php.conf
   service httpd restart
 fi
@@ -51,19 +53,18 @@ if [ ! -f /usr/local/bin/composer ];then
 fi
 
 # DRUSH
-# /usr/local/bin/composer global show -i|grep drush > /dev/null
-# test if symlink and file exist
+# test if file exists and is a symlink
 if [ ! -L /usr/local/bin/drush ];then
   echo drush
-  /usr/local/bin/composer global require drush/drush:7.*
+  composer global require drush/drush:7.*
   ln -fs /root/.composer/vendor/bin/drush /usr/local/bin/drush
 fi
 
 # MARIADB
 rpm -qa|grep MariaDB > /dev/null
 if [ $? -ne 0 ];then
-  echo maria
-  ln -s /vagrant/config/yum/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
+  echo mariadb
+  ln -fs /vagrant/config/yum/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
   yum -y install MariaDB-server MariaDB-client
   chkconfig --levels 345 mysql on
   service mysql start
@@ -119,44 +120,44 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   . /vagrant/config/drupal/fix-permissions.sh --drupal_path=/var/www/example.com --drupal_user=root --httpd_group=apache
 fi
 
-## DRUPAL THEME BOOTSTRAP
-if [ ! -d /var/www/example.com/sites/all/themes/bootstrap ];then
-  drush -y en jquery_update bootstrap
-  drush vset theme_default bootstrap
-fi
+### DRUPAL THEME BOOTSTRAP
+#if [ ! -d /var/www/example.com/sites/all/themes/bootstrap ];then
+  #drush -y en jquery_update bootstrap
+  #drush vset theme_default bootstrap
+#fi
 
-## DRUPAL THEME OMEGA
-if [ ! -d /var/www/example.com/sites/all/themes/omega ];then
-  drush -y en omega
-  drush omega-subtheme --enable --set-default omegasub
-  cat /vagrant/config/drupal/omega-settings.info >> /var/www/example.com/sites/all/themes/omegasub/omegasub.info
-fi
+### DRUPAL THEME OMEGA
+#if [ ! -d /var/www/example.com/sites/all/themes/omega ];then
+  #drush -y en jquery_update omega
+  #drush omega-subtheme --enable --set-default omegasub
+  #cat /vagrant/config/drupal/omega-settings.info >> /var/www/example.com/sites/all/themes/omegasub/omegasub.info
+#fi
 
-## VARNISH
-rpm -qa|grep varnish > /dev/null
-if [ $? -ne 0 ];then
-  echo varnish
-  # install varnish
-  rpm --nosignature -i https://repo.varnish-cache.org/redhat/varnish-4.0.el6.rpm
-  yum -y install varnish
-  chkconfig --levels 345 varnish on
-  # update ports so forwards to apache
-  sed -i 's/80/8080/' /etc/httpd/conf/httpd.conf
-  sed -i 's/^VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
-  # update config, \cp will run original cp command without alias, which is cp -i
-  \cp /vagrant/config/varnish/default.vcl /etc/varnish/
-  # install drupal module and set config
-  cd /var/www/example.com
-  drush -y dl varnish-7.x-1.x-dev
-  drush en -y varnish
-  # this prompts for input, 1 = cache
-  echo 1 | drush vset cache 1
-  drush vset block_cache 1
-  drush vset page_cache_maximum_age 900
-  drush vset cache_lifetime 0
-  drush vset varnish_version 4
-  cat /etc/varnish/secret | xargs drush vset varnish_control_key
-  # restart
-  service httpd restart
-  service varnish restart
-fi
+### VARNISH
+#rpm -qa|grep varnish > /dev/null
+#if [ $? -ne 0 ];then
+  #echo varnish
+  ## install varnish
+  #rpm --nosignature -i https://repo.varnish-cache.org/redhat/varnish-4.0.el6.rpm
+  #yum -y install varnish
+  #chkconfig --levels 345 varnish on
+  ## update ports so forwards to apache
+  #sed -i 's/80/8080/' /etc/httpd/conf/httpd.conf
+  #sed -i 's/^VARNISH_LISTEN_PORT=6081/VARNISH_LISTEN_PORT=80/' /etc/sysconfig/varnish
+  ## update config, \cp will run original cp command without alias, which is cp -i
+  #\cp /vagrant/config/varnish/default.vcl /etc/varnish/
+  ## install drupal module and set config
+  #cd /var/www/example.com
+  #drush -y dl varnish-7.x-1.x-dev
+  #drush en -y varnish
+  ## this prompts for input, 1 = cache
+  #echo 1 | drush vset cache 1
+  #drush vset block_cache 1
+  #drush vset page_cache_maximum_age 900
+  #drush vset cache_lifetime 0
+  #drush vset varnish_version 4
+  #cat /etc/varnish/secret | xargs drush vset varnish_control_key
+  ## restart
+  #service httpd restart
+  #service varnish restart
+#fi
