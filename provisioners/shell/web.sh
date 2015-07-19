@@ -1,6 +1,9 @@
 
 export PATH=/usr/local/bin:$PATH
 
+# turn off fastestmirror
+sed -i 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf
+
 # HTTPD
 rpm -qa|grep httpd > /dev/null
 # $? return code from last command
@@ -83,7 +86,7 @@ fi
 # DRUPAL INSTALL
 if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   echo drupal
-  rm -f /var/www/example.com
+  rm -rf /var/www/example.com
   cd /var/www
   # download/install drupal7
   drush dl drupal-7.x --drupal-project-rename=example.com
