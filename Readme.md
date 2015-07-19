@@ -61,7 +61,7 @@ curl "https://atlas.hashicorp.com/api/v1/box/{$USERNAME}/{$BOX_NAME}/version/{$V
 # just had to use new curl bin `/usr/local/Cellar/curl/7.41.0_1/bin/curl`
 # update, I kept getting curl: (56) SSL read: error:00000000:lib(0):func(0):reason(0), errno 54, trying to upload to gdrive
 # https://drive.google.com/file/d/0B6ohN-ATa3DYQzE3UUVLQmtsVHM/view?usp=sharing
-curl -o output -# -X PUT --upload-file example.box https://binstore.hashicorp.com/3f44063f-ab7a-4a11-84a1-8582d8450c28
+curl --keepalive-time 1 -o output -# -X PUT --upload-file example.box https://binstore.hashicorp.com/3f44063f-ab7a-4a11-84a1-8582d8450c28
 
 ## Release version
 click `Edit` beside v1.0.1, then `Release version`
