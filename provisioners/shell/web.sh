@@ -100,7 +100,8 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   # metatag for automatic metatags
   # transliteration for cleaning up filenames during upload
   # admin_menu for easy admin nav
-  drush -y en views devel advanced_help syslog pathauto metatag transliteration admin_menu
+  # security_review for review of settings
+  drush -y en views devel advanced_help syslog pathauto metatag transliteration admin_menu security_review
   # view_ui for ui based views admin
   # devel_generate for content
   drush -y en views_ui devel_generate
@@ -121,6 +122,10 @@ if [ ! -f /var/www/example.com/sites/default/settings.php ];then
   echo "\$base_url = 'http://example.com';" >> /var/www/example.com/sites/default/settings.php
   drush vset error_level 0
   . /vagrant/config/drupal/fix-permissions.sh --drupal_path=/var/www/example.com --drupal_user=root --httpd_group=apache
+  # cron
+  drush cron
+  # restart
+  service httpd restart
 fi
 
 ### DRUPAL THEME BOOTSTRAP
