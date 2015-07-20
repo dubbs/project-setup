@@ -40,6 +40,15 @@ cd
 umount /mnt/iso
 ```
 
+## add public key before package
+```bash
+# https://github.com/mitchellh/vagrant/issues/5186#issuecomment-81409295
+wget https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub -O .ssh/authorized_keys
+chmod 700 .ssh
+chmod 600 .ssh/authorized_keys
+chown -R vagrant:vagrant .ssh
+```
+
 ## package vm
 vagrant package --output v1.box
 vagrant box add v1 v1.box
@@ -48,5 +57,7 @@ vagrant box add v1 v1.box
 ```ruby
 Vagrant.configure(2) do |config|
   config.vm.box = "v1"
+  config.ssh.insert_key = false
 end
 ```
+

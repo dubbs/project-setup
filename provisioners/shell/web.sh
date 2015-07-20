@@ -4,49 +4,6 @@
 ## turn off fastestmirror
 #sed -i 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf
 
-## HTTPD
-#rpm -qa|grep httpd > /dev/null
-## $? return code from last command
-#if [ $? -ne 0 ];then
-  #echo httpd
-  ## install httpd
-  #yum -y install httpd
-  ## set runlevels for httpd service
-  ##   chkconfig --list httpd
-  ##   httpd 0:off 1:off 2:off 3:off 4:off 5:off 6:off
-  #chkconfig --levels 345 httpd on
-  ## enable named virtual hosts
-  #sed -i.orig 's/^#NameVirtualHost/NameVirtualHost/' /etc/httpd/conf/httpd.conf
-  ## set server name
-  #sed -i.orig2 's/^#ServerName www.example.com:80/ServerName 192.168.33.10/' /etc/httpd/conf/httpd.conf
-  ## add virtual host entry to conf
-  #cat /vagrant/config/httpd/vhosts.conf >> /etc/httpd/conf/httpd.conf
-  ## add test file
-  #mkdir -p /var/www/example.com
-  #echo 'HTML' > /var/www/example.com/index.html
-  ## start httpd
-  #service httpd start
-#fi
-
-## PHP
-#rpm -qa|grep php > /dev/null
-#if [ $? -ne 0 ];then
-  #echo php
-  ## add webtatic repository
-  #rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm
-  ## install php extensions
-  ## gd for drush
-  ## apcu for drupal upload progress
-  ## mbstring for improved unicode support in drupal
-  ## yum search php56
-  #yum -y install php56w php56w-mysql php56w-gd php56w-mbstring php56w-pecl-zendopcache php56w-pecl-xdebug php56w-pecl-apcu
-  ## enable apc for file upload
-  #sed -i 's/^apc.rfc1867=0/apc.rfc1867=1/' /etc/php.d/apcu.ini
-  ## add test file
-  #echo '<?php echo phpinfo(); ?>' > /var/www/example.com/index.php
-  ## @see /etc/httpd/conf.d/php.conf
-  #service httpd restart
-#fi
 
 ## COMPOSER
 #if [ ! -f /usr/local/bin/composer ];then
@@ -63,25 +20,6 @@
   #ln -fs /root/.composer/vendor/bin/drush /usr/local/bin/drush
 #fi
 
-## MARIADB
-#rpm -qa|grep MariaDB > /dev/null
-#if [ $? -ne 0 ];then
-  #echo mariadb
-  #ln -fs /vagrant/config/yum/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
-  #yum -y install MariaDB-server MariaDB-client
-  #chkconfig --levels 345 mysql on
-  #service mysql start
-#fi
-
-## DB
-#if [ ! -d /var/lib/mysql/example_com ];then
-  #echo dbusers
-  #mysql -uroot -e "CREATE DATABASE example_com;"
-  #mysql -uroot -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';"
-  #mysql -uroot -e "GRANT ALL PRIVILEGES ON example_com.* TO admin@'%' IDENTIFIED BY 'password';"
-  #mysql -uroot -e "GRANT ALL PRIVILEGES ON example_com.* TO admin@localhost IDENTIFIED BY 'password';"
-  #mysql -uroot -e "FLUSH PRIVILEGES;"
-#fi
 
 ## DRUPAL INSTALL
 #if [ ! -f /var/www/example.com/sites/default/settings.php ];then

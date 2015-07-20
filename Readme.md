@@ -49,7 +49,7 @@ https://atlas.hashicorp.com/help/vagrant/boxes/create
 ```bash
 USERNAME=dubbs
 BOX_NAME=example
-VERSION=1.0.1
+VERSION=1.0.3
 PROVIDER_NAME=virtualbox
 ACCESS_TOKEN=9JJVBxMVhmhyqrNC5AMpojhAsoSyy8oJhYB7jkyYtyU20dh0fhMdi5mn7yxla2mvBOc
 curl "https://atlas.hashicorp.com/api/v1/box/{$USERNAME}/{$BOX_NAME}/version/{$VERSION}/provider/{$PROVIDER_NAME}/upload?access_token={$ACCESS_TOKEN}"

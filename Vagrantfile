@@ -1,15 +1,32 @@
 Vagrant.configure(2) do |config|
-  # vbase
+  #base
   #config.vm.box = "chef/centos-6.5"
-  # v1 - guest additions
+  #config.vm.provision "shell", path: "provisioners/shell/yum-kernel.sh"
+  #config.vm.provision "shell", path: "provisioners/shell/yum-repo.sh"
+  #config.vm.provision "shell", path: "provisioners/shell/yum-update.sh"
+  #config.ssh.insert_key = false
+  #v1
   #config.vm.box = "v1"
-  # v1.0.1 - update and httpd
-  config.vm.box = "v1.0.1"
-  config.vm.network "private_network", ip: "192.168.33.10"
-  config.vm.provision "shell", path: "provisioners/shell/httpd.sh"
-
   #config.vm.synced_folder ".", "/vagrant", disabled: true
-  #config.vm.box = "centos-6.5-drupal-7.38"
+  #config.vm.provision "shell", path: "provisioners/shell/vb-guest.sh"
+  #config.ssh.insert_key = false
+  #v1.0.1
+  #config.vm.box = "v1.0.1"
+  #config.vm.provision "shell", path: "provisioners/shell/httpd.sh"
+  #config.vm.provision "shell", path: "provisioners/shell/php.sh"
+  #config.ssh.insert_key = false
+  #v1.0.2
+  #config.vm.box = "v1.0.2"
+  #config.vm.provision "shell", path: "provisioners/shell/mariadb.sh"
+  #config.ssh.insert_key = false
+  #v1.0.3 - current
+  #config.vm.box = "v1.0.3"
+  #config.ssh.insert_key = false
+  #dubbs/example
+  config.vm.box = "dubbs/example"
+  config.ssh.insert_key = false
+
+  #config.vm.network "private_network", ip: "192.168.33.10"
   #config.vm.box_check_update = false
   #config.vm.provider "virtualbox" do |v|
     #v.memory = 1024
