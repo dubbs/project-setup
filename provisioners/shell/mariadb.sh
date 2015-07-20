@@ -7,6 +7,7 @@ if [ $? -ne 0 ];then
   yum -y install MariaDB-server MariaDB-client
   chkconfig --levels 345 mysql on
   service mysql start
+  service httpd restart
 fi
 
 # DB
