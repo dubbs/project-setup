@@ -25,16 +25,16 @@ Vagrant.configure(2) do |config|
   #config.vm.provision "shell", path: "provisioners/shell/drupal.sh"
   #config.ssh.insert_key = false
   #v1.0.4 - current
-  config.vm.box = "v1.0.4"
+  #config.vm.box = "v1.0.4"
+  #config.vm.network "private_network", ip: "192.168.33.10"
+  #config.vm.synced_folder ".", "/vagrant", disabled: true
+  #config.ssh.insert_key = false
+  #dubbs/example
+  config.vm.box = "dubbs/example"
   config.vm.network "private_network", ip: "192.168.33.10"
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.ssh.insert_key = false
-  #dubbs/example
-  #config.vm.box = "dubbs/example"
-  #config.vm.network "private_network", ip: "192.168.33.10"
-  #config.ssh.insert_key = false
 
-  #config.vm.network "private_network", ip: "192.168.33.10"
   #config.vm.box_check_update = false
   #config.vm.provider "virtualbox" do |v|
     #v.memory = 1024
