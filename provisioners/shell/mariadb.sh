@@ -3,7 +3,7 @@ rpm -qa|grep MariaDB > /dev/null
 # $? return code from last command
 if [ $? -ne 0 ];then
   echo mariadb
-  ln -fs /vagrant/config/yum/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
+  #ln -fs /vagrant/config/yum/MariaDB.repo /etc/yum.repos.d/MariaDB.repo
   yum -y install MariaDB-server MariaDB-client
   chkconfig --levels 345 mysql on
   service mysql start
